@@ -89,7 +89,7 @@ func GetHighLikesOrders() ([]Order, error) {
 		FROM orders o
 		INNER JOIN likes l ON o.id = l.order_id
 		GROUP BY o.id
-		HAVING COUNT(l.id) > 3
+		HAVING numlikes > 3
 	`
 	rows, err := db.Query(query)
 	if err != nil {
@@ -127,9 +127,9 @@ func GetLowLikesOrders() ([]Order, error) {
 	query := `
 		SELECT o.id, o.title, o.image, o.price, o.quantity, o.description, count(l.id) as numlikes
 		FROM orders o
-		INNER JOIN likes l ON o.id = l.order_id
+		LEFT JOIN likes l ON o.id = l.order_id
 		GROUP BY o.id
-		HAVING COUNT(l.id) < 3
+		HAVING numlikes < 3
 	`
 	rows, err := db.Query(query)
 	if err != nil {
